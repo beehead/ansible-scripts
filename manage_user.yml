@@ -1,0 +1,124 @@
+# manage_user.yml - an ansible playbook to manage users on linux servers
+# You should have users_var directory with defined users variables, format username.yml. 
+# When you start playbook it asks for username. Action can be given by tags
+# Usage:
+#   ansible-playbook manage_user.yml [-i inventory] [-l hosts] [--tags add_user,change_password,ssh,ssh_remove] -K
+#
+---
+- hosts : all
+  vars_prompt:
+    - name: user
+      prompt: "Input username"
+      private: no
+
+  gather_facts: yes
+  vars_files:
+     - 'users_var/{{ user }}.yml'
+  tasks:
+    - name: get current day
+      debug: 
+         var=ansible_date_time.date
+      tags: 
+         - add_user
+         - change_password
+         - ssh
+
+    - name: add user with defined alias, uid, username and default shell is bash
+      command: useradd -c '{{ user_alias }}' -u '{{ user_uid }}' -m '{{ user_name }}' -s /bin/bash 
+      ignore_errors: yes
+      become: yes
+      register: grep_adduser
+      tags:
+         - add_user
+
+    - name: Set home directory permission 700 - only user accessible
+      become: yes
+      file: 
+         path: /home/{{ user_name }}
+         state: directory
+         owner: '{{ user_name }}'
+         group: '{{ user_name }}'
+         mode: 0700
+      tags:
+         - add_user
+         - change_password
+         - ssh
+
+    - name: Set current date as the date when password changed, delete this task?
+      shell: chage -d '{{ ansible_date_time.date }}' '{{ user_name }}'
+      ignore_errors: true
+      become: yes
+      tags:
+         - change_password
+
+    - name: Set password policy for user - inactive after 14 days, can change password not before 1 day, notify 14 days
+      shell: chage -I 14 -m 1 -W 14 '{{ user_name }}'
+      ignore_errors: true
+      become: yes
+      tags:
+         - change_password
+
+    - name: Set password
+      user:
+        name: '{{ user_name }}'
+        update_password: always
+        password: '{{ user_hash }}'
+      become: yes
+      tags:
+         - change_password
+
+    - name: Create .ssh for authorization by key
+      file:
+         path: /home/{{ user_name }}/.ssh
+         state: directory
+         owner: '{{ user_name }}'
+         group: '{{ user_name }}'
+         mode: 0700
+      become: yes
+      tags:
+         - ssh
+
+    - name: Remove authorized_keys file to fill with only actual keys defined in users_var
+      become: yes
+      file:
+         path: /home/{{ user_name }}/.ssh/authorized_keys
+         state: absent
+      tags:
+         - ssh_remove
+         - never
+
+    - name: Create authorized_keys file
+      become: yes
+      file:
+         path: /home/{{ user_name }}/.ssh/authorized_keys
+         state: touch
+         owner: '{{ user_name }}'
+         group: '{{ user_name }}'
+         mode: 0600
+      tags:
+         - ssh
+         - ssh_remove
+
+    - name: Put keys in authorized_keys
+      become: yes
+      lineinfile:
+         path: /home/{{ user_name }}/.ssh/authorized_keys
+         line: '{{ item }}'
+      with_items: 
+         - "{{ user_key }}"
+      tags:
+         - ssh
+         - ssh_remove
+
+    - name: Add alias
+      lineinfile:
+        dest=/etc/aliases
+        state=present
+        regexp='^#?{{ item.key }}'
+        line='{{ item.key }}:{{ item.value }}'
+      with_items:
+         - {key: '{{ user_name }}', value: '{{ user_mail }}'}
+      register: aliases
+      become:  yes
+      tags: 
+          - add_user
