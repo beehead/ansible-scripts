@@ -1,0 +1,14 @@
+# example of user variables file
+# user_name - given username
+# user_alias - usually the first and the last names
+# user_mail - user email
+# user_uid - user uid, usually more than 500 (1000)
+# user_hash - password hash, you can generate it via command 'mkpasswd -m SHA-512 -R 10000'
+# user_key - public key used for authentication, you can generate it via 'ssh-keygen -t rsa -b 4096 -C "username@host"'
+
+user_name: username
+user_alias: 'FirstName LastName'
+user_mail: username@domain.ex   
+user_uid: 1234
+user_hash: $6$rounds=10000$1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./
+user_key: ssh-rsa AAAAB3NzaC1234567890-=qwertyuiop[]asdfghjkl;'\zxcvbnm,./ username@host
