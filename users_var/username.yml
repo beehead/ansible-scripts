@@ -3,7 +3,7 @@
 # user_alias - usually the first and the last names
 # user_mail - user email
 # user_uid - user uid, usually more than 500 (1000)
-# user_hash - password hash, you can generate it via command 'mkpasswd -m SHA-512 -R 10000'
+# user_hash - password hash, you can generate it via command 'mkpasswd -m SHA-512 -R 10000' or request hash from user
 # user_key - public key used for authentication, you can generate it via 'ssh-keygen -t rsa -b 4096 -C "username@host"'
 
 user_name: username
