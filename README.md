@@ -14,4 +14,7 @@
 
 ## ansible playbooks
 ### ansible playbook add, change password, add or remove ssh key for linux users. All variables should be defined in users_var/username.yml
-`ansible-playbook manage_user.yml [-i inventory] [-l hosts] [--tags add_user,change_password,ssh,ssh_remove] -K`
+`ansible-playbook manage_user.yml [-i inventory] [-l hosts] [--tags add_user,change_password,ssh,ssh_remove] -KD`
+
+### ansible playbook to change user password on linux
+`ansible-playbook change_password.yml [-i inventory] [-l hosts] -KD`
