@@ -118,7 +118,6 @@
         line='{{ item.key }}:{{ item.value }}'
       with_items:
          - {key: '{{ user_name }}', value: '{{ user_mail }}'}
-      register: aliases
       become:  yes
       tags: 
           - add_user
