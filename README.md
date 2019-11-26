@@ -1,6 +1,6 @@
 # ansible playbooks and ad-hoc commands
 To remember:
-- ansible do not respect sudoers, you should be allowed all commands to use become
+- ansible does not respect sudoers, you should be allowed all commands to use become
 - ansible cannot change password with no sudo
 
 ## ansible ad-hoc commands
