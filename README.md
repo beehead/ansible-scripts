@@ -13,6 +13,9 @@ To remember:
 ### ansible manage systemd service using shell module, should be a superuser (in sudoers)
 `ansible all [-i inventory_file] [-l host_name] -m shell -a "systemctl [start,stop,restart] service_name.service" -u user_name --become -KD`
 
+### ansible replace some line in file
+ansible all [-i inventory] [-l host_name] -m lineinfile -a "path=path_to_file regexp='^\/ex\/amp\.le' line='new_line'" [--become] [-kKD]
+
 ## ansible playbooks
 ### ansible playbook add, change password, add or remove ssh key for linux users. All variables should be defined in users_var/username.yml
 `ansible-playbook manage_user.yml [-i inventory] [-l hosts] [--tags add_user,change_password,ssh,ssh_remove] -KD`
