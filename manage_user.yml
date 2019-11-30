@@ -3,7 +3,11 @@
 # When you start playbook it asks for username. Action can be given by tags
 # Usage:
 #   ansible-playbook manage_user.yml [-i inventory] [-l hosts] [--tags add_user,change_password,ssh,ssh_remove] -K
-#
+# tags:
+# add_user - add new user
+# change_password - change user's password
+# ssh - add user's ssh key
+# ssh_remove - remove all user's ssh key except defined in users_var file
 ---
 - hosts : all
   vars_prompt:
