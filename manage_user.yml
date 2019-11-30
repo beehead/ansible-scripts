@@ -57,6 +57,7 @@
       become: yes
       tags:
          - change_password
+         - add_user
 
     - name: Set password
       user:
@@ -66,6 +67,7 @@
       become: yes
       tags:
          - change_password
+         - add_user
 
     - name: Create .ssh for authorization by key
       file:
@@ -77,6 +79,7 @@
       become: yes
       tags:
          - ssh
+         - add_user
 
     - name: Remove authorized_keys file to fill with only actual keys defined in users_var
       become: yes
@@ -98,6 +101,7 @@
       tags:
          - ssh
          - ssh_remove
+         - add_user
 
     - name: Put keys in authorized_keys
       become: yes
@@ -109,6 +113,7 @@
       tags:
          - ssh
          - ssh_remove
+         - add_user
 
     - name: Add alias
       lineinfile:
